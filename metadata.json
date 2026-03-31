@@ -1,0 +1,5 @@
+{
+  "name": "Log Analyzer Dashboard",
+  "description": "A dashboard for analyzing service logs and viewing service status.",
+  "requestFramePermissions": []
+}
