@@ -1,26 +1,26 @@
 import { useState } from 'react';
 import { Search, Terminal, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 
-// Fake API
+// Call the real backend API
 const analyzeLog = async (logText: string) => {
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 1500));
-  
-  // Simple mock logic based on keywords, or default to the requested mock
-  if (logText.toLowerCase().includes('auth') || logText.toLowerCase().includes('token')) {
-    return {
-      service: "auth-service",
-      cause: "EXPIRED_TOKEN",
-      confidence: 92,
-      recommendation: "Check token expiration settings and ensure client is refreshing tokens properly."
-    };
+  const response = await fetch('/analyze', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ log: logText }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to analyze log');
   }
+
+  const data = await response.json();
   
+  // Map root_cause from API to cause for the UI
   return {
-    service: "payment-service",
-    cause: "DB_DOWN",
-    confidence: 87,
-    recommendation: "Verify database connection string and check if the database instance is currently running."
+    ...data,
+    cause: data.root_cause
   };
 };
 
